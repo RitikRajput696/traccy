@@ -1,85 +1,133 @@
-"use client"; // This is crucial for using hooks like useState and useEffect
+"use client";
 import Toolbar from "@/components/Toolbar";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
+import { ToolType } from "@/types/Tool";
 
-function CanvasPage() {
-  // 1. State is "lifted up" to the parent component
-  const [tool, setTool] = useState("pen");
-  const [isDrawing, setIsDrawing] = useState(false);
+function page() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const canvasContainerRef = useRef<HTMLDivElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const startRef = useRef<{ x: number; y: number } | null>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [tool, setTool] = useState<ToolType | null>("pen");
 
-  useEffect(() => {
+  // Set canvas size based on container
+  const setCanvasSize = () => {
     const canvas = canvasRef.current;
-    if (canvas) {
+    const container = canvasContainerRef.current;
+
+    if (canvas && container) {
+      const containerRect = container.getBoundingClientRect();
+
+      canvas.width = containerRect.width;
+      canvas.height = containerRect.height;
+
+      // Initialize canvas
       const ctx = canvas.getContext("2d");
       if (ctx) {
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctxRef.current = ctx; // Store the context in a ref
+        ctxRef.current = ctx;
       }
     }
+  };
+
+  useEffect(() => {
+    // Use ResizeObserver for better container size detection
+    const resizeObserver = new ResizeObserver(() => {
+      setCanvasSize();
+    });
+
+    if (canvasContainerRef.current) {
+      resizeObserver.observe(canvasContainerRef.current);
+    }
+
+    // Initial setup
+    setCanvasSize();
+
+    return () => {
+      resizeObserver.disconnect();
+    };
   }, []);
 
-  // This effect handles the 'clear' action
-  useEffect(() => {
-    if (tool === "clear") {
+  function handleToolChange(selectedTool: ToolType) {
+    if (selectedTool === "clear") {
       const canvas = canvasRef.current;
       const ctx = ctxRef.current;
       if (canvas && ctx) {
-        // Clear the entire canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Fill it with the background color again
         ctx.fillStyle = "white";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        // Reset the tool back to 'pen'
-        setTool("pen");
+      }
+      setTool("pen");
+    } else {
+      setTool(selectedTool);
+    }
+  }
+
+  function startDrawing(e: React.MouseEvent) {
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+
+    setIsDrawing(true);
+
+    if (tool === "pen") {
+      ctx.beginPath();
+      ctx.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    }
+
+    if (tool === "rect") {
+      startRef.current = {
+        x: e.nativeEvent.offsetX,
+        y: e.nativeEvent.offsetY,
+      };
+    }
+  }
+
+  function draw(e: React.MouseEvent) {
+    if (!isDrawing) return;
+
+    const ctx = ctxRef.current;
+    if (!ctx) return;
+
+    if (tool === "pen") {
+      ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+      ctx.stroke();
+    } else if (tool === "rect") {
+      const startX = startRef.current?.x;
+      const startY = startRef.current?.y;
+
+      if (startX !== undefined && startY !== undefined) {
+        const width = e.nativeEvent.offsetX - startX;
+        const height = e.nativeEvent.offsetY - startY;
+        ctx.strokeRect(startX, startY, width, height);
       }
     }
-  }, [tool]);
+  }
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!ctxRef.current) return;
-    ctxRef.current.beginPath();
-    ctxRef.current.moveTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-    setIsDrawing(true);
-  };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !ctxRef.current) return;
-
-    // This is where you'll check the 'tool' state
-    if (tool === "pen") {
-      ctxRef.current.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
-      ctxRef.current.stroke();
-    }
-    // else if (tool === "rectangle") { ... logic for rectangle ... }
-  };
-
-  const stopDrawing = () => {
-    if (!ctxRef.current) return;
-    ctxRef.current.closePath();
+  function stopDrawing() {
     setIsDrawing(false);
-  };
+  }
 
   return (
-    <div>
-      {/* 2. Pass the state and the setter function to the Toolbar */}
-      <Toolbar activeTool={tool} onToolChange={setTool} />
+    <div className=" h-screen  relative">
+      <Toolbar onToolChange={handleToolChange} currentTool={tool} />
 
-      {/* 3. The canvas uses the state to determine its behavior */}
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={800}
-        onMouseDown={startDrawing}
-        onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseLeave={stopDrawing}
-        style={{ border: "1px solid black" }}
-      ></canvas>
+      {/* Canvas container - adjust this div's size as needed */}
+      <div
+        ref={canvasContainerRef}
+        className="w-full h-full border-2 border-gray-400 "
+      >
+        <canvas
+          ref={canvasRef}
+          className="block"
+          onMouseDown={startDrawing}
+          onMouseMove={draw}
+          onMouseUp={stopDrawing}
+          onMouseLeave={stopDrawing}
+        />
+      </div>
     </div>
   );
 }
 
-export default CanvasPage;
+export default page;

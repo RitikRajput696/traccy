@@ -1,32 +1,45 @@
 import React from "react";
+import { ToolType } from "@/types/Tool";
+import {
+  Pencil,
+  Square,
+  Circle,
+  RectangleHorizontal,
+  Trash2,
+} from "lucide-react";
 
-// Define the props interface for type-checking
-interface ToolbarProps {
-  activeTool: string;
-  onToolChange: (tool: string) => void;
+interface ToolBarProps {
+  onToolChange: (toolName: ToolType) => void;
+  currentTool: ToolType | null;
 }
 
-function Toolbar({ activeTool, onToolChange }: ToolbarProps) {
-  const tools = ["pen", "rectangle", "square", "clear"];
+const toolIcons = {
+  clear: Trash2,
+  pen: Pencil,
+  rect: RectangleHorizontal,
+  circle: Circle,
+};
 
+function Toolbar({ onToolChange, currentTool }: ToolBarProps) {
+  let tools: ToolType[] = ["clear", "pen", "rect", "circle"];
   return (
-    <div style={{ marginBottom: "10px" }}>
-      {tools.map((tool) => (
-        <button
-          key={tool}
-          onClick={() => onToolChange(tool)}
-          style={{
-            backgroundColor: activeTool === tool ? "lightblue" : "white",
-            marginRight: "5px",
-            padding: "5px 10px",
-            border: "1px solid black",
-            cursor: "pointer",
-          }}
-        >
-          {tool.charAt(0).toUpperCase() + tool.slice(1)}{" "}
-          {/* Capitalize first letter */}
-        </button>
-      ))}
+    <div className="flex gap-1 p-4 select-none absolute bg-blue-300/30 backdrop-blur-md rounded-2xl -translate-1/2 left-1/2 top-10">
+      {tools.map((tool, i) => {
+        const IconComponent = toolIcons[tool];
+        return (
+          <button
+            className={`px-2 py-2 rounded-lg font-semibold transition-colors duration-200 capitalize ${
+              currentTool === tool
+                ? "bg-blue-500 text-white shadow-lg"
+                : "bg-white text-gray-700 hover:bg-gray-200"
+            }`}
+            key={i}
+            onClick={() => onToolChange(tool)}
+          >
+            <IconComponent size={20} />
+          </button>
+        );
+      })}
     </div>
   );
 }
