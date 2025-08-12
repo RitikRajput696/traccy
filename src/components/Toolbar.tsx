@@ -17,11 +17,11 @@ const toolIcons = {
   clear: Trash2,
   pen: Pencil,
   rect: RectangleHorizontal,
-  circle: Circle,
+  ellipse: Circle,
 };
 
 function Toolbar({ onToolChange, currentTool }: ToolBarProps) {
-  let tools: ToolType[] = ["clear", "pen", "rect", "circle"];
+  let tools: ToolType[] = ["clear", "pen", "rect", "ellipse"];
   return (
     <div className="flex gap-1 p-4 select-none absolute bg-blue-300/30 backdrop-blur-lg rounded-2xl -translate-1/2 left-1/2 top-10 z-10">
       {tools.map((tool, i) => {

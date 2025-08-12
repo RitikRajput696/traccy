@@ -9,7 +9,7 @@ function CanvasPage() {
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
-  const rectRef = useRef<{ x: number; y: number } | null>(null);
+  const startPosRef = useRef<{ x: number; y: number } | null>(null);
   const snapshotRef = useRef<ImageData | null>(null);
 
   useEffect(() => {
@@ -53,8 +53,8 @@ function CanvasPage() {
       ctxRef.current.beginPath();
       ctxRef.current.moveTo(x1, y1);
     }
-    if (tool === "rect") {
-      rectRef.current = { x: x1, y: y1 };
+    if (tool === "rect" || tool === "ellipse") {
+      startPosRef.current = { x: x1, y: y1 };
       snapshotRef.current = ctxRef.current.getImageData(
         0,
         0,
@@ -76,22 +76,49 @@ function CanvasPage() {
       ctxRef.current.lineTo(x2, y2);
       ctxRef.current.stroke();
     } else if (tool === "rect") {
-      if (rectRef.current && snapshotRef.current) {
+      if (startPosRef.current && snapshotRef.current) {
         ctxRef.current.putImageData(snapshotRef.current, 0, 0);
-        const width = x2 - rectRef.current.x;
-        const height = y2 - rectRef.current.y;
+        const width = x2 - startPosRef.current.x;
+        const height = y2 - startPosRef.current.y;
         ctxRef.current.strokeRect(
-          rectRef.current.x,
-          rectRef.current.y,
+          startPosRef.current.x,
+          startPosRef.current.y,
           width,
           height
         );
+      }
+    } else if (tool === "ellipse") {
+      if (startPosRef.current && snapshotRef.current) {
+        ctxRef.current.putImageData(snapshotRef.current, 0, 0);
+
+        const startX = startPosRef.current.x;
+        const startY = startPosRef.current.y;
+
+        const centerX = startX + (x2 - startX) / 2;
+        const centerY = startY + (y2 - startY) / 2;
+        const radiusX = Math.abs((x2 - startX) / 2);
+        const radiusY = Math.abs((y2 - startY) / 2);
+
+        ctxRef.current.beginPath();
+        // Draw the ellipse using the calculated center and radii
+        ctxRef.current.ellipse(
+          centerX,
+          centerY,
+          radiusX,
+          radiusY,
+          0,
+          0,
+          2 * Math.PI
+        );
+        ctxRef.current.stroke();
       }
     }
   };
 
   const stopDrawing = () => {
     setIsDrawing(false);
+    snapshotRef.current = null;
+    startPosRef.current = null;
   };
 
   return (

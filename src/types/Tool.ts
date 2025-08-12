@@ -1,1 +1,1 @@
-export type ToolType = "clear" | "pen" | "rect" | "circle";
+export type ToolType = "clear" | "pen" | "rect" | "ellipse";
