@@ -1,3 +1,4 @@
 export const COLORS = {
-  canvasColor: "#fff",
+  canvasColor: "#fff", //solid white
+  panelColors: ["#fbe7c6", "#b4f8c8", " #a0e7e5", "#ffaebc"], // yellow, mint, triffiny blue, pink
 };
