@@ -51,6 +51,7 @@ function CanvasPage() {
 
     if (tool === "pen") {
       ctxRef.current.beginPath();
+      ctxRef.current.lineWidth = 2;
       ctxRef.current.moveTo(x1, y1);
     }
     if (tool === "rect" || tool === "ellipse") {
@@ -80,6 +81,7 @@ function CanvasPage() {
         ctxRef.current.putImageData(snapshotRef.current, 0, 0);
         const width = x2 - startPosRef.current.x;
         const height = y2 - startPosRef.current.y;
+        ctxRef.current.lineWidth = 2;
         ctxRef.current.strokeRect(
           startPosRef.current.x,
           startPosRef.current.y,
