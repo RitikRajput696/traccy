@@ -3,6 +3,8 @@ import Toolbar from "@/components/Toolbar";
 import React, { useState, useRef, useEffect } from "react";
 import { ToolType } from "@/types/Tool";
 import { COLORS } from "@/lib/Colors";
+import CanvasBg from "@/components/CanvasBg";
+import ColorPanel from "@/components/ColorPanel";
 
 function CanvasPage() {
   const [tool, setTool] = useState<ToolType | null>("pen");
@@ -12,6 +14,7 @@ function CanvasPage() {
   const startPosRef = useRef<{ x: number; y: number } | null>(null);
   const snapshotRef = useRef<ImageData | null>(null);
 
+  //create canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     if (canvas) {
@@ -23,6 +26,7 @@ function CanvasPage() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctxRef.current = ctx; // Store the context in a ref
       }
+      CanvasBg(canvas);
     }
   }, []);
 
@@ -39,6 +43,7 @@ function CanvasPage() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         // Reset the tool back to 'pen'
         setTool("pen");
+        CanvasBg(canvas);
       }
     }
   }, [tool]);
@@ -135,7 +140,7 @@ function CanvasPage() {
         onMouseMove={draw}
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
-        className="border-2 block"
+        className="block"
       ></canvas>
     </div>
   );
