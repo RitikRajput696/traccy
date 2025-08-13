@@ -1,5 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import TraccyHero from "@/../public/traccy-hero.svg";
 import {
   ArrowRight,
   Zap,
@@ -228,22 +230,10 @@ export default function page() {
             {/* Demo mockup */}
             <div className="relative max-w-5xl mx-auto mt-20">
               <div className="bg-white border border-gray-200 rounded-2xl p-8 shadow-2xl shadow-gray-200/50">
-                <div className="aspect-video bg-gray-50 rounded-xl relative overflow-hidden border border-gray-100">
-                  <div className="absolute top-4 left-4 flex space-x-2">
-                    <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                    <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                    <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                  </div>
-                  <div className="absolute inset-8 flex items-center justify-center">
-                    <div className="text-6xl font-light text-gray-300">
-                      Traccy
-                    </div>
-                  </div>
-                  {/* Subtle geometric elements in mockup */}
-                  <div className="absolute top-20 left-20 w-16 h-16 border border-gray-200 rounded-lg"></div>
-                  <div className="absolute top-32 right-32 w-8 h-8 bg-gray-200 rounded-full"></div>
-                  <div className="absolute bottom-20 left-32 w-20 h-px bg-gray-200"></div>
-                </div>
+                <Image
+                  src={TraccyHero}
+                  alt="whiteboarding application showcase"
+                />
               </div>
             </div>
           </div>

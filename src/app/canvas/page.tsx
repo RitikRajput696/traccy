@@ -13,7 +13,7 @@ function CanvasPage() {
       toolSize: 1,
       toolColor: "#000000",
     });
-  const [penColor, setPenColor] = useState("red");
+  const [penColor, setPenColor] = useState("rgba(255, 48, 162, 1)");
   const [penSize, setPenSize] = useState(5);
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
