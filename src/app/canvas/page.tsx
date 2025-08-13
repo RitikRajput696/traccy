@@ -1,13 +1,20 @@
 "use client";
 import Toolbar from "@/components/Toolbar";
 import React, { useState, useRef, useEffect } from "react";
-import { ToolType } from "@/types/Tool";
+import { ToolType, ToolPropertiesType } from "@/types/Tool";
 import { COLORS } from "@/lib/Colors";
 import CanvasBg from "@/components/CanvasBg";
 import ColorPanel from "@/components/ColorPanel";
 
 function CanvasPage() {
   const [tool, setTool] = useState<ToolType | null>("pen");
+  const [toolProperties, setToolProperties] =
+    useState<ToolPropertiesType | null>({
+      toolSize: 1,
+      toolColor: "#000000",
+    });
+  const [penColor, setPenColor] = useState("red");
+  const [penSize, setPenSize] = useState(5);
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -56,7 +63,8 @@ function CanvasPage() {
 
     if (tool === "pen") {
       ctxRef.current.beginPath();
-      ctxRef.current.lineWidth = 2;
+      ctxRef.current.lineWidth = penSize;
+      ctxRef.current.strokeStyle = penColor;
       ctxRef.current.moveTo(x1, y1);
     }
     if (tool === "rect" || tool === "ellipse") {
