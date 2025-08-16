@@ -61,10 +61,12 @@ function CanvasPage() {
     const x1 = e.nativeEvent.offsetX;
     const y1 = e.nativeEvent.offsetY;
 
-    if (tool === "pen") {
+    if (tool === "pen" || tool === "eraser") {
       ctxRef.current.beginPath();
       ctxRef.current.lineWidth = penSize;
-      ctxRef.current.strokeStyle = penColor;
+      // ctxRef.current.strokeStyle = penColor;
+      ctxRef.current.strokeStyle =
+        tool === "eraser" ? COLORS.canvasColor : penColor;
       ctxRef.current.moveTo(x1, y1);
     }
     if (tool === "rect" || tool === "ellipse") {
@@ -86,7 +88,7 @@ function CanvasPage() {
     const x2 = e.nativeEvent.offsetX;
     const y2 = e.nativeEvent.offsetY;
 
-    if (tool === "pen") {
+    if (tool === "pen" || tool === "eraser") {
       ctxRef.current.lineTo(x2, y2);
       ctxRef.current.stroke();
     } else if (tool === "rect") {
