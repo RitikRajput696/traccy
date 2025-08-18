@@ -66,6 +66,7 @@ function CanvasPage() {
 
     // get starting coordinates
     if ("touches" in e) {
+      e.preventDefault();
       const touch = e.touches[0];
 
       x1 = touch.clientX;
@@ -120,6 +121,7 @@ function CanvasPage() {
 
     // touch events for touch display
     if ("touches" in e) {
+      e.preventDefault();
       const touch = e.touches[0];
 
       x2 = touch.clientX;
