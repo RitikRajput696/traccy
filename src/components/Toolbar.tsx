@@ -25,14 +25,14 @@ const toolIcons = {
 function Toolbar({ onToolChange, currentTool }: ToolBarProps) {
   let tools: ToolType[] = ["clear", "pen", "rect", "ellipse", "eraser"];
   return (
-    <div className="absolute -translate-1/2 left-1/2 top-10 z-10 flex justify-between w-full ml-2 mr-2 items-center mt-2">
-      <ColorPanel />
-      <div className="flex gap-1 p-4 select-none  bg-blue-300/30 backdrop-blur-lg rounded-2xl  ">
+    <div className="absolute top-10 left-1/2 z-10 mt-2 mr-2 ml-2 flex -translate-1/2 items-center justify-between">
+      {/* <ColorPanel /> */}
+      <div className="flex gap-1 rounded-2xl bg-blue-300/30 p-4 backdrop-blur-lg select-none">
         {tools.map((tool, i) => {
           const IconComponent = toolIcons[tool];
           return (
             <button
-              className={`w-8 h-8 flex items-center justify-center rounded-lg font-semibold transition-colors duration-200 capitalize ${
+              className={`flex h-8 w-8 items-center justify-center rounded-lg font-semibold capitalize transition-colors duration-200 ${
                 currentTool === tool
                   ? "bg-blue-500 text-white shadow-lg"
                   : "bg-white text-gray-700 hover:bg-gray-200"

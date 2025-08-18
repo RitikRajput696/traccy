@@ -10,11 +10,11 @@ function CanvasPage() {
   const [tool, setTool] = useState<ToolType | null>("pen");
   const [toolProperties, setToolProperties] =
     useState<ToolPropertiesType | null>({
-      toolSize: 1,
-      toolColor: "#000000",
+      size: 1,
+      color: "#000000",
     });
-  const [penColor, setPenColor] = useState("rgba(255, 48, 162, 1)");
-  const [penSize, setPenSize] = useState(5);
+  // const [penColor, setPenColor] = useState("rgba(255, 48, 162, 1)");
+  // const [penSize, setPenSize] = useState(5);
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
@@ -58,16 +58,25 @@ function CanvasPage() {
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!ctxRef.current || !canvasRef.current) return;
 
+    // get starting coordinates
     const x1 = e.nativeEvent.offsetX;
     const y1 = e.nativeEvent.offsetY;
 
     if (tool === "pen" || tool === "eraser") {
       ctxRef.current.beginPath();
-      ctxRef.current.lineWidth = penSize;
+      if (toolProperties) {
+        if (tool === "eraser") {
+          ctxRef.current.lineWidth = toolProperties.size * 3;
+        } else {
+          ctxRef.current.lineWidth = toolProperties.size;
+        }
+
+        ctxRef.current.strokeStyle =
+          tool === "eraser" ? COLORS.canvasColor : toolProperties.color;
+        ctxRef.current.moveTo(x1, y1);
+      }
+
       // ctxRef.current.strokeStyle = penColor;
-      ctxRef.current.strokeStyle =
-        tool === "eraser" ? COLORS.canvasColor : penColor;
-      ctxRef.current.moveTo(x1, y1);
     }
     if (tool === "rect" || tool === "ellipse") {
       startPosRef.current = { x: x1, y: y1 };
@@ -77,12 +86,16 @@ function CanvasPage() {
         canvasRef.current.width,
         canvasRef.current.height
       );
+      if (toolProperties) {
+        ctxRef.current.lineWidth = toolProperties.size;
+        ctxRef.current.strokeStyle = toolProperties.color;
+      }
     }
 
     setIsDrawing(true);
   };
 
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  function draw(e: React.MouseEvent<HTMLCanvasElement>) {
     if (!isDrawing || !ctxRef.current) return;
 
     const x2 = e.nativeEvent.offsetX;
@@ -92,11 +105,13 @@ function CanvasPage() {
       ctxRef.current.lineTo(x2, y2);
       ctxRef.current.stroke();
     } else if (tool === "rect") {
+      //check for starting position and previous image
       if (startPosRef.current && snapshotRef.current) {
+        // put previous image
         ctxRef.current.putImageData(snapshotRef.current, 0, 0);
         const width = x2 - startPosRef.current.x;
         const height = y2 - startPosRef.current.y;
-        ctxRef.current.lineWidth = 2;
+        // create rectangle
         ctxRef.current.strokeRect(
           startPosRef.current.x,
           startPosRef.current.y,
@@ -130,18 +145,18 @@ function CanvasPage() {
         ctxRef.current.stroke();
       }
     }
-  };
+  }
 
-  const stopDrawing = () => {
+  function stopDrawing() {
     setIsDrawing(false);
     snapshotRef.current = null;
     startPosRef.current = null;
-  };
+  }
 
   return (
     <div>
       <Toolbar onToolChange={setTool} currentTool={tool} />
-
+      <ColorPanel onToolPropertiesChange={setToolProperties} />
       <canvas
         ref={canvasRef}
         width={"100vw"}
