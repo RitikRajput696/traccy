@@ -55,12 +55,25 @@ function CanvasPage() {
     }
   }, [tool]);
 
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  function startDrawing(
+    e:
+      | React.MouseEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>,
+  ) {
     if (!ctxRef.current || !canvasRef.current) return;
+    let x1: number;
+    let y1: number;
 
     // get starting coordinates
-    const x1 = e.nativeEvent.offsetX;
-    const y1 = e.nativeEvent.offsetY;
+    if ("touches" in e) {
+      const touch = e.touches[0];
+
+      x1 = touch.clientX;
+      y1 = touch.clientY;
+    } else {
+      x1 = e.nativeEvent.offsetX;
+      y1 = e.nativeEvent.offsetY;
+    }
 
     if (tool === "pen" || tool === "eraser") {
       ctxRef.current.beginPath();
@@ -84,7 +97,7 @@ function CanvasPage() {
         0,
         0,
         canvasRef.current.width,
-        canvasRef.current.height
+        canvasRef.current.height,
       );
       if (toolProperties) {
         ctxRef.current.lineWidth = toolProperties.size;
@@ -93,13 +106,28 @@ function CanvasPage() {
     }
 
     setIsDrawing(true);
-  };
+  }
 
-  function draw(e: React.MouseEvent<HTMLCanvasElement>) {
+  function draw(
+    e:
+      | React.MouseEvent<HTMLCanvasElement>
+      | React.TouchEvent<HTMLCanvasElement>,
+  ) {
     if (!isDrawing || !ctxRef.current) return;
 
-    const x2 = e.nativeEvent.offsetX;
-    const y2 = e.nativeEvent.offsetY;
+    // ending coordinates for shapes
+    let x2: number, y2: number;
+
+    // touch events for touch display
+    if ("touches" in e) {
+      const touch = e.touches[0];
+
+      x2 = touch.clientX;
+      y2 = touch.clientY;
+    } else {
+      x2 = e.nativeEvent.offsetX;
+      y2 = e.nativeEvent.offsetY;
+    }
 
     if (tool === "pen" || tool === "eraser") {
       ctxRef.current.lineTo(x2, y2);
@@ -116,7 +144,7 @@ function CanvasPage() {
           startPosRef.current.x,
           startPosRef.current.y,
           width,
-          height
+          height,
         );
       }
     } else if (tool === "ellipse") {
@@ -140,7 +168,7 @@ function CanvasPage() {
           radiusY,
           0,
           0,
-          2 * Math.PI
+          2 * Math.PI,
         );
         ctxRef.current.stroke();
       }
@@ -165,6 +193,9 @@ function CanvasPage() {
         onMouseMove={draw}
         onMouseUp={stopDrawing}
         onMouseLeave={stopDrawing}
+        onTouchStart={startDrawing}
+        onTouchMove={draw}
+        onTouchEnd={stopDrawing}
         className="block"
       ></canvas>
     </div>
