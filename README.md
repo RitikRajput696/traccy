@@ -2,10 +2,11 @@
 
 Traccy is a minimalist and responsive whiteboarding application built with React and Tailwind CSS. It provides a clean canvas for users to draw, sketch, and visualize ideas with a variety of basic tools.
 
+try at [https://traccy-draw.vercel.app](https://traccy-draw.vercel.app)
+
 ## ✨ Features
 
 - **Drawing Tools**: A simple toolbar with essential tools including:
-
   - <code>Pen</code>: Freehand drawing.
 
   - <code>Rectangle</code>: Draw perfect rectangles.
