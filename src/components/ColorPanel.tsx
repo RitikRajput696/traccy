@@ -21,11 +21,11 @@ export default function ColorPanel({
   }, [toolSize, toolColor]);
 
   return (
-    <div className="absolute z-20 mt-2 ml-2 rounded-2xl border bg-white p-1">
-      <div>
-        <div className="flex flex-col">
+    <div className="absolute bottom-0 left-1/2 z-20 mb-1 -translate-x-1/2 rounded-2xl border bg-white pr-2 pl-2 sm:top-2 sm:bottom-auto sm:left-2 sm:-translate-x-0">
+      <div className="flex sm:flex-col">
+        <div className="flex flex-col p-1">
           <label htmlFor="">colors</label>
-          <div className="flex justify-around">
+          <div className="flex justify-around gap-1">
             {COLORS.panelColors.map((color, i) => (
               <div
                 className={`h-8 w-8 rounded-lg border ${toolColor === color ? "ring-2 ring-blue-500" : "border"} `}
