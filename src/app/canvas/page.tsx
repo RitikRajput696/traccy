@@ -3,7 +3,7 @@ import Toolbar from "@/components/Toolbar";
 import React, { useState, useRef, useEffect } from "react";
 import { ToolType, ToolPropertiesType } from "@/types/Tool";
 import { COLORS } from "@/lib/Colors";
-import CanvasBg from "@/components/CanvasBg";
+// import CanvasBg from "@/components/CanvasBg";
 import ColorPanel from "@/components/ColorPanel";
 
 function CanvasPage() {
@@ -33,7 +33,7 @@ function CanvasPage() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctxRef.current = ctx; // Store the context in a ref
       }
-      CanvasBg(canvas);
+      // CanvasBg(canvas);
     }
   }, []);
 
@@ -50,7 +50,7 @@ function CanvasPage() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         // Reset the tool back to 'pen'
         setTool("pen");
-        CanvasBg(canvas);
+        // CanvasBg(canvas);
       }
     }
   }, [tool]);
