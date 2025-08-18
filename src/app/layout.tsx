@@ -30,7 +30,7 @@ export default function RootLayout({
       </Head> */}
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} overscroll-none antialiased`}
       >
         {children}
       </body>
