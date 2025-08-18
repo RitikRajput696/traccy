@@ -4,6 +4,8 @@ Traccy is a minimalist and responsive whiteboarding application built with React
 
 try at [https://traccy-draw.vercel.app](https://traccy-draw.vercel.app)
 
+![some drawings, that showcase traccy whiteboarding app](/public/drawing1.png "you can create drawing")
+
 ## ✨ Features
 
 - **Drawing Tools**: A simple toolbar with essential tools including:
